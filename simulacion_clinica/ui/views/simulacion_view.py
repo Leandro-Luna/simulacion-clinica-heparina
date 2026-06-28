@@ -19,8 +19,8 @@ def render(state: UIConfigState) -> None:
     st.header("Simulación base")
 
     col_btn1, col_btn2 = st.columns([1, 1])
-    ejecutar = col_btn1.button("Ejecutar simulación", type="primary")
-    descargar = col_btn2.button("Exportar a Excel", disabled=True)
+    ejecutar = col_btn1.button("Ejecutar simulación", type="primary", key="sim_ejecutar")
+    descargar = col_btn2.button("Exportar a Excel", disabled=True, key="sim_exportar")
 
     if ejecutar:
         st.session_state["sim_df_corrida1"] = None
@@ -69,4 +69,5 @@ def render(state: UIConfigState) -> None:
                 data=excel_bytes,
                 file_name="resultado_simulacion.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                key="sim_download",
             )
