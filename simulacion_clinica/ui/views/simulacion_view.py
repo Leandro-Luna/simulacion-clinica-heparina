@@ -12,7 +12,7 @@ from simulacion_clinica.ui.components.charts import (
     chart_stock_vs_dia,
 )
 from simulacion_clinica.ui.config_state import UIConfigState
-from simulacion_clinica.ui.utils import exportar_simulacion_bytes
+from simulacion_clinica.ui.utils import exportar_simulacion_bytes, safe_dataframe
 
 
 def render(state: UIConfigState) -> None:
@@ -48,19 +48,19 @@ def render(state: UIConfigState) -> None:
             ["Stock", "Costo acumulado", "Demanda", "CTF por réplica"]
         )
         with tab1:
-            st.plotly_chart(chart_stock_vs_dia(df_corrida1), use_container_width=True)
+            st.plotly_chart(chart_stock_vs_dia(df_corrida1), width="stretch")
         with tab2:
-            st.plotly_chart(chart_costo_acumulado(df_corrida1), use_container_width=True)
+            st.plotly_chart(chart_costo_acumulado(df_corrida1), width="stretch")
         with tab3:
-            st.plotly_chart(chart_demanda_vs_dia(df_corrida1), use_container_width=True)
+            st.plotly_chart(chart_demanda_vs_dia(df_corrida1), width="stretch")
         with tab4:
-            st.plotly_chart(chart_replicas_ctf(df_resumen), use_container_width=True)
+            st.plotly_chart(chart_replicas_ctf(df_resumen), width="stretch")
 
         st.subheader("Tablas")
         with st.expander("Detalle por día (Corrida 1)", expanded=False):
-            st.dataframe(df_corrida1, use_container_width=True, hide_index=True)
+            st.dataframe(df_corrida1, width="stretch", hide_index=True)
         with st.expander("Resumen de réplicas", expanded=False):
-            st.dataframe(df_resumen, use_container_width=True, hide_index=True)
+            st.dataframe(safe_dataframe(df_resumen), width="stretch", hide_index=True)
 
         if descargar:
             excel_bytes = exportar_simulacion_bytes(df_corrida1, df_resumen)

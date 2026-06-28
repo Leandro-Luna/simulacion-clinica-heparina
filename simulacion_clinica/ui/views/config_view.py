@@ -11,7 +11,7 @@ def render_sidebar(state: UIConfigState) -> None:
     """Renderiza el sidebar con todos los parámetros agrupados."""
     st.sidebar.title("Configuración")
 
-    if st.sidebar.button("Restaurar defaults", use_container_width=True):
+    if st.sidebar.button("Restaurar defaults", width="stretch"):
         state.reset()
         st.rerun()
 

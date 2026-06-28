@@ -1,6 +1,15 @@
-"""Utilidades de exportación para la UI."""
+"""Utilidades de exportación y display para la UI."""
 
 import pandas as pd
+
+
+def safe_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """Convierte columnas object/mixtas a string para st.dataframe (compatibilidad Arrow)."""
+    df_display = df.copy()
+    for col in df_display.columns:
+        if df_display[col].dtype == "object":
+            df_display[col] = df_display[col].astype(str)
+    return df_display
 
 
 def exportar_simulacion(

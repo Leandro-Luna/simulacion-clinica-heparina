@@ -11,7 +11,7 @@ from simulacion_clinica.ui.components.charts import (
     chart_optimizacion_mejor_detalle,
 )
 from simulacion_clinica.ui.config_state import UIConfigState
-from simulacion_clinica.ui.utils import exportar_optimizacion_bytes
+from simulacion_clinica.ui.utils import exportar_optimizacion_bytes, safe_dataframe
 
 
 def render(state: UIConfigState) -> None:
@@ -58,20 +58,20 @@ def render(state: UIConfigState) -> None:
         )
         with tab1:
             st.plotly_chart(
-                chart_optimizacion_ctf(df_resultados, top_n=10), use_container_width=True
+                chart_optimizacion_ctf(df_resultados, top_n=10), width="stretch"
             )
         with tab2:
             st.plotly_chart(
-                chart_optimizacion_mejor_detalle(df_mejor), use_container_width=True
+                chart_optimizacion_mejor_detalle(df_mejor), width="stretch"
             )
         with tab3:
-            st.plotly_chart(chart_costo_acumulado(df_mejor), use_container_width=True)
+            st.plotly_chart(chart_costo_acumulado(df_mejor), width="stretch")
 
         st.subheader("Tablas")
         with st.expander("Combinaciones evaluadas", expanded=False):
-            st.dataframe(df_resultados, use_container_width=True, hide_index=True)
+            st.dataframe(safe_dataframe(df_resultados), width="stretch", hide_index=True)
         with st.expander("Detalle mejor combinación", expanded=False):
-            st.dataframe(df_mejor, use_container_width=True, hide_index=True)
+            st.dataframe(safe_dataframe(df_mejor), width="stretch", hide_index=True)
 
         if descargar:
             excel_bytes = exportar_optimizacion_bytes(df_resultados, df_mejor)
