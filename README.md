@@ -35,6 +35,18 @@ uv sync
 uv run python -m simulacion_clinica.main
 ```
 
+### Interfaz de escritorio (Flet)
+
+También podés ejecutar la aplicación para configurar parámetros, correr la simulación/optimización y ver gráficos y tablas sin salir de la app:
+
+```bash
+# Modo web (por defecto; abre el navegador)
+uv run python -m simulacion_clinica.ui.app
+
+# Modo ventana de escritorio nativa
+FLET_VIEW=desktop uv run python -m simulacion_clinica.ui.app
+```
+
 La simulación:
 1. Muestra en consola el DataFrame con el detalle por día (sin límites de columnas/filas).
 2. Imprime un resumen con el costo total final (CTF) y su desglose.
@@ -95,10 +107,18 @@ simulacion_clinica/
 ├── config.py        # Parámetros configurables (dataclass Config)
 ├── generadores.py   # Transformada inversa: demanda_LMV, demanda_MJS, demora_proveedor
 ├── simulacion.py    # Bucle principal del flowchart → DataFrame por día
-├── main.py          # Entry point: corre sim, muestra y exporta resultados
+├── optimizacion.py  # Modelo de optimización por PEP y grid search
+├── main.py          # Entry point CLI de la simulación
+├── main_optimizacion.py  # Entry point CLI de la optimización
+├── ui/              # Aplicación de escritorio con Flet
+│   ├── app.py
+│   ├── config_state.py
+│   ├── views/
+│   └── components/
 └── tests/
-    ├── test_generadores.py   # Tests de los generadores (12 tests)
-    └── test_simulacion.py    # Tests del bucle de simulación (22 tests)
+    ├── test_generadores.py
+    ├── test_simulacion.py
+    └── test_optimizacion.py
 ```
 
 ## Testing

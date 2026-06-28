@@ -1,12 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "simulacion-clinica"
 version = "0.1.0"
 description = "Simulación de gestión de stock de Heparina en un centro de diálisis (TP Simulación - UTN FRRe)"
 requires-python = ">=3.12"
-dependencies = ["pandas>=2.0", "openpyxl>=3.1", "scipy>=1.13"]
+dependencies = [
+    "pandas>=2.0",
+    "openpyxl>=3.1",
+    "scipy>=1.13",
+    "flet>=0.85.3",
+    "flet-web>=0.85.3",
+    "flet-desktop>=0.85.3",
+    "matplotlib>=3.11.0",
+]
+
+[project.scripts]
+simulacion-clinica-ui = "simulacion_clinica.ui.app:main"
 
 [dependency-groups]
 dev = ["pytest>=8", "ruff>=0.6", "pyright>=1.1"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["simulacion_clinica*"]
 
 [tool.pytest.ini_options]
 testpaths = ["simulacion_clinica/tests"]
@@ -20,4 +39,5 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 
 [tool.pyright]
 include = ["simulacion_clinica"]
+exclude = ["simulacion_clinica/ui"]
 venvPath = ".venv"
