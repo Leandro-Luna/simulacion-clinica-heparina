@@ -1,0 +1,23 @@
+[project]
+name = "simulacion-clinica"
+version = "0.1.0"
+description = "Simulación de gestión de stock de Heparina en un centro de diálisis (TP Simulación - UTN FRRe)"
+requires-python = ">=3.12"
+dependencies = ["pandas>=2.0", "openpyxl>=3.1", "scipy>=1.13"]
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.6", "pyright>=1.1"]
+
+[tool.pytest.ini_options]
+testpaths = ["simulacion_clinica/tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.pyright]
+include = ["simulacion_clinica"]
+venvPath = ".venv"
