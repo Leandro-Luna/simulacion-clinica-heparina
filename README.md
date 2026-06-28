@@ -35,6 +35,14 @@ uv sync
 uv run python -m simulacion_clinica.main
 ```
 
+### Interfaz web (Streamlit)
+
+También podés ejecutar la aplicación web para configurar parámetros, correr la simulación/optimización y ver gráficos interactivos y tablas en el navegador:
+
+```bash
+uv run streamlit run simulacion_clinica/ui/app.py
+```
+
 La simulación:
 1. Muestra en consola el DataFrame con el detalle por día (sin límites de columnas/filas).
 2. Imprime un resumen con el costo total final (CTF) y su desglose.

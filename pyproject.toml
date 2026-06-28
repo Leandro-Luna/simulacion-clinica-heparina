@@ -3,7 +3,13 @@ name = "simulacion-clinica"
 version = "0.1.0"
 description = "Simulación de gestión de stock de Heparina en un centro de diálisis (TP Simulación - UTN FRRe)"
 requires-python = ">=3.12"
-dependencies = ["pandas>=2.0", "openpyxl>=3.1", "scipy>=1.13"]
+dependencies = [
+    "pandas>=2.0",
+    "openpyxl>=3.1",
+    "scipy>=1.13",
+    "streamlit>=1.58.0",
+    "plotly>=6.8.0",
+]
 
 [dependency-groups]
 dev = ["pytest>=8", "ruff>=0.6", "pyright>=1.1"]
@@ -20,4 +26,5 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 
 [tool.pyright]
 include = ["simulacion_clinica"]
+exclude = ["simulacion_clinica/ui"]
 venvPath = ".venv"
