@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 
 class ConfigView(ft.Column):
     def __init__(self, app: App) -> None:
-        super().__init__(controls=self._build_controls(), scroll=ft.ScrollMode.AUTO, expand=True)
         self.app = app
+        super().__init__(controls=self._build_controls(), scroll=ft.ScrollMode.AUTO, expand=True)
 
     def _field(
         self,
