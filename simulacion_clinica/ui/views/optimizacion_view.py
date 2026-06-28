@@ -20,9 +20,8 @@ if TYPE_CHECKING:
     from simulacion_clinica.ui.app import App
 
 
-class OptimizacionView(ft.View):
+class OptimizacionView(ft.Column):
     def __init__(self, app: App) -> None:
-        super().__init__(route="/optimizacion")
         self.app = app
         self._resultado_container = ft.Column(scroll=ft.ScrollMode.AUTO, expand=True)
         self._boton_exportar = ft.ElevatedButton(
@@ -31,23 +30,27 @@ class OptimizacionView(ft.View):
             on_click=self._exportar,
             disabled=True,
         )
-        self.controls = [
-            ft.Text("Optimización", size=24, weight=ft.FontWeight.BOLD),
-            ft.Divider(),
-            ft.Row(
-                [
-                    ft.ElevatedButton(
-                        "Ejecutar optimización",
-                        icon=ft.Icons.PLAY_ARROW,
-                        on_click=self._ejecutar,
-                    ),
-                    self._boton_exportar,
-                ],
-                spacing=10,
-            ),
-            ft.Divider(),
-            self._resultado_container,
-        ]
+        super().__init__(
+            controls=[
+                ft.Text("Optimización", size=24, weight=ft.FontWeight.BOLD),
+                ft.Divider(),
+                ft.Row(
+                    [
+                        ft.ElevatedButton(
+                            "Ejecutar optimización",
+                            icon=ft.Icons.PLAY_ARROW,
+                            on_click=self._ejecutar,
+                        ),
+                        self._boton_exportar,
+                    ],
+                    spacing=10,
+                ),
+                ft.Divider(),
+                self._resultado_container,
+            ],
+            scroll=ft.ScrollMode.AUTO,
+            expand=True,
+        )
         self.df_resultados: pd.DataFrame | None = None
         self.df_mejor: pd.DataFrame | None = None
 

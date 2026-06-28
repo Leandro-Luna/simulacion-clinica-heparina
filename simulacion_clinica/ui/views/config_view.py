@@ -11,11 +11,10 @@ if TYPE_CHECKING:
     from simulacion_clinica.ui.app import App
 
 
-class ConfigView(ft.View):
+class ConfigView(ft.Column):
     def __init__(self, app: App) -> None:
-        super().__init__(route="/config")
+        super().__init__(controls=self._build_controls(), scroll=ft.ScrollMode.AUTO, expand=True)
         self.app = app
-        self.controls = self._build_controls()
 
     def _field(
         self,

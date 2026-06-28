@@ -21,9 +21,8 @@ if TYPE_CHECKING:
     from simulacion_clinica.ui.app import App
 
 
-class SimulacionView(ft.View):
+class SimulacionView(ft.Column):
     def __init__(self, app: App) -> None:
-        super().__init__(route="/simulacion")
         self.app = app
         self._resultado_container = ft.Column(scroll=ft.ScrollMode.AUTO, expand=True)
         self._boton_exportar = ft.ElevatedButton(
@@ -32,23 +31,27 @@ class SimulacionView(ft.View):
             on_click=self._exportar,
             disabled=True,
         )
-        self.controls = [
-            ft.Text("Simulación base", size=24, weight=ft.FontWeight.BOLD),
-            ft.Divider(),
-            ft.Row(
-                [
-                    ft.ElevatedButton(
-                        "Ejecutar simulación",
-                        icon=ft.Icons.PLAY_ARROW,
-                        on_click=self._ejecutar,
-                    ),
-                    self._boton_exportar,
-                ],
-                spacing=10,
-            ),
-            ft.Divider(),
-            self._resultado_container,
-        ]
+        super().__init__(
+            controls=[
+                ft.Text("Simulación base", size=24, weight=ft.FontWeight.BOLD),
+                ft.Divider(),
+                ft.Row(
+                    [
+                        ft.ElevatedButton(
+                            "Ejecutar simulación",
+                            icon=ft.Icons.PLAY_ARROW,
+                            on_click=self._ejecutar,
+                        ),
+                        self._boton_exportar,
+                    ],
+                    spacing=10,
+                ),
+                ft.Divider(),
+                self._resultado_container,
+            ],
+            scroll=ft.ScrollMode.AUTO,
+            expand=True,
+        )
         self.df_corrida1: pd.DataFrame | None = None
         self.df_resumen: pd.DataFrame | None = None
 
