@@ -12,6 +12,13 @@ import pandas as pd
 from simulacion_clinica.simulacion import simular_replicas
 from simulacion_clinica.ui.config_state import UIConfigState
 from simulacion_clinica.ui.utils import exportar_simulacion_bytes
+from simulacion_clinica.ui_ctk.charts import (
+    chart_costo_acumulado,
+    chart_demanda_vs_dia,
+    chart_replicas_ctf,
+    chart_stock_vs_dia,
+    embed_chart,
+)
 from simulacion_clinica.ui_ctk.tablas import mostrar_dataframe
 
 _ETIQUETAS_STATS = {"Promedio", "Desvío", "Mín", "Máx", "IC Inf", "IC Sup"}
@@ -58,6 +65,7 @@ class SimulacionTab(ctk.CTkFrame):
 
         self._tabs = ctk.CTkTabview(self)
         self._tabs.pack(fill="both", expand=True, padx=8, pady=4)
+        self._tabs.add("Gráficos")
         self._tabs.add("Detalle por día")
         self._tabs.add("Resumen réplicas")
 
@@ -111,6 +119,27 @@ class SimulacionTab(ctk.CTkFrame):
                 mostrar_dataframe(frame, self._df_corrida1, height=400)
             else:
                 mostrar_dataframe(frame, df_replicas, height=300)
+
+        # Gráficos
+        graficos_frame = self._tabs.tab("Gráficos")
+        for w in graficos_frame.winfo_children():
+            w.destroy()
+
+        grid = ctk.CTkFrame(graficos_frame, fg_color="transparent")
+        grid.pack(fill="both", expand=True, padx=4, pady=4)
+        grid.grid_columnconfigure((0, 1), weight=1)
+        grid.grid_rowconfigure((0, 1), weight=1)
+
+        for i, (fig_fn, _titulo) in enumerate([
+            (chart_stock_vs_dia, "Stock"),
+            (chart_costo_acumulado, "Costo acumulado"),
+            (chart_demanda_vs_dia, "Demanda"),
+            (chart_replicas_ctf, "CTF por réplica"),
+        ]):
+            sub = ctk.CTkFrame(grid)
+            sub.grid(row=i // 2, column=i % 2, sticky="nsew", padx=4, pady=4)
+            df = self._df_corrida1 if fig_fn != chart_replicas_ctf else self._df_resumen
+            embed_chart(sub, fig_fn(df))
 
     def _exportar(self) -> None:
         if self._df_corrida1 is None or self._df_resumen is None:

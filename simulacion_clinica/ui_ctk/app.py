@@ -17,6 +17,11 @@ if sys.platform == "win32":
     except Exception:
         pass
 
+# Backend matplotlib ANTES de importar pyplot
+import matplotlib  # noqa: E402
+
+matplotlib.use("TkAgg")  # noqa: E402
+
 from tkinter import ttk
 
 import customtkinter as ctk

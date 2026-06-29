@@ -42,7 +42,7 @@ class ConfigPanel(ctk.CTkScrollableFrame):
             ("Stock inicial", "ST_inicial", 1000, 0, 100),
             ("Compra emergencia (PE)", "PE", 500, 0, 100),
             ("Stock seguridad (SS)", "SS", 300, 0, 100),
-            ("Tamaño pedido (TP)", "TP", 1500, 0, 100),
+            ("Tamaño pedido (TP)", "TP", 2000, 0, 100),
         ])
         self._seccion("Costos", [
             ("Costo unitario pedido", "costo_unitario_pedido", 1150, 0, 50),

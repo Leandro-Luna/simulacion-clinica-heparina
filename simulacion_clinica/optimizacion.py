@@ -48,7 +48,7 @@ class ConfigOptimizacion:
     ST_inicial: int = 1000
     cantidad_emergencia: int = 500  # tamaño compra de emergencia (cc)
     SS: int = 300  # stock de seguridad (umbral de emergencia)
-    TP: int = 1500  # tamaño del pedido programado (cc)
+    TP: int = 2000  # tamaño del pedido programado (cc)
     punto_emision_pedido: int = 2000  # PEP: nivel de stock que dispara el pedido
 
     # --- Costos ---

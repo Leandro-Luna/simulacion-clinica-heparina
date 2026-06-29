@@ -12,6 +12,11 @@ import pandas as pd
 from simulacion_clinica.optimizacion import optimizar, simular_optimizacion
 from simulacion_clinica.ui.config_state import UIConfigState
 from simulacion_clinica.ui.utils import exportar_optimizacion_bytes
+from simulacion_clinica.ui_ctk.charts import (
+    chart_optimizacion_ctf,
+    chart_optimizacion_mejor_detalle,
+    embed_chart,
+)
 from simulacion_clinica.ui_ctk.tablas import mostrar_dataframe
 
 _FUENTE = "Segoe UI"
@@ -51,6 +56,7 @@ class OptimizacionTab(ctk.CTkFrame):
 
         self._tabs = ctk.CTkTabview(self)
         self._tabs.pack(fill="both", expand=True, padx=8, pady=4)
+        self._tabs.add("Gráficos")
         self._tabs.add("Combinaciones evaluadas")
         self._tabs.add("Detalle mejor combinación")
 
@@ -134,6 +140,24 @@ class OptimizacionTab(ctk.CTkFrame):
             for w in frame.winfo_children():
                 w.destroy()
             mostrar_dataframe(frame, df, height=400)
+
+        # Gráficos
+        graficos_frame = self._tabs.tab("Gráficos")
+        for w in graficos_frame.winfo_children():
+            w.destroy()
+
+        grid = ctk.CTkFrame(graficos_frame, fg_color="transparent")
+        grid.pack(fill="both", expand=True, padx=4, pady=4)
+        grid.grid_columnconfigure((0, 1), weight=1)
+        grid.grid_rowconfigure(0, weight=1)
+
+        left = ctk.CTkFrame(grid)
+        left.grid(row=0, column=0, sticky="nsew", padx=4, pady=4)
+        embed_chart(left, chart_optimizacion_ctf(self._df_resultados, top_n=10))
+
+        right = ctk.CTkFrame(grid)
+        right.grid(row=0, column=1, sticky="nsew", padx=4, pady=4)
+        embed_chart(right, chart_optimizacion_mejor_detalle(self._df_mejor))
 
     def _exportar(self) -> None:
         if self._df_resultados is None or self._df_mejor is None:
