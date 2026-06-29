@@ -9,23 +9,12 @@ Uso directo:
 
 Uso con PyInstaller (generar .exe en Windows):
 
-    pyinstaller simulacion_clinica/ui/launcher.py \\
-        --name simulacion-clinica \\
-        --collect-all streamlit \\
-        --collect-all plotly \\
-        --add-data "simulacion_clinica/ui/app.py;simulacion_clinica/ui" \\
-        --add-data "simulacion_clinica/ui/views;simulacion_clinica/ui/views" \\
-        --add-data "simulacion_clinica/ui/components;simulacion_clinica/ui/components" \\
-        --add-data "simulacion_clinica/ui/config_state.py;simulacion_clinica/ui" \\
-        --add-data "simulacion_clinica/ui/utils.py;simulacion_clinica/ui" \\
-        --add-data "simulacion_clinica;simulacion_clinica" \\
-        --onefile
+    pyinstaller simulacion-clinica.spec --clean --noconfirm
 """
 
 from __future__ import annotations
 
 import sys
-import webbrowser
 from pathlib import Path
 
 
@@ -51,24 +40,14 @@ def main() -> None:
 
     app_path = _resolver_app_path()
 
-    # Abrir el navegador automáticamente después de un breve delay
-    import threading
-
-    def _abrir_navegador() -> None:
-        import time
-
-        time.sleep(2)
-        webbrowser.open("http://localhost:8501")
-
-    threading.Thread(target=_abrir_navegador, daemon=True).start()
-
+    # Dejar que Streamlit maneje el puerto y la apertura del navegador.
+    # No hardcodear el puerto porque puede haber config del usuario que
+    # override el default (8501).
     bootstrap.run(
         main_script_path=app_path,
         is_hello=False,
         args=[],
         flag_options={
-            "server.port": 8501,
-            "server.headless": False,
             "browser.gatherUsageStats": False,
         },
     )
