@@ -1,7 +1,8 @@
 """Launcher para empaquetar la app Streamlit como ejecutable con PyInstaller.
 
-Este script arranca Streamlit como un subprocess del CLI `streamlit run`,
-lo que es más confiable que la API interna `bootstrap.run` para empaquetado.
+Este script arranca Streamlit programáticamente. En modo desarrollo usa
+subprocess del CLI; en modo empaquetado (frozen) usa bootstrap.run con
+variables de entorno para forzar el puerto.
 
 Uso directo:
 
@@ -38,10 +39,8 @@ def _resolver_app_path() -> str:
     raise FileNotFoundError("No se encontró app.py")
 
 
-def main() -> None:
-    app_path = _resolver_app_path()
-
-    # Construir el comando streamlit run con flags explícitos
+def _run_subprocess(app_path: str) -> None:
+    """Modo desarrollo: usa subprocess con el CLI de Streamlit."""
     cmd = [
         sys.executable,
         "-m",
@@ -57,18 +56,37 @@ def main() -> None:
         "--global.developmentMode",
         "false",
     ]
-
-    # En modo empaquetado (PyInstaller), el PYTHONPATH puede no incluir
-    # el directorio del ejecutable. Lo agregamos explícitamente.
-    env = os.environ.copy()
-    if getattr(sys, "frozen", False):
-        base = Path(sys._MEIPASS)  # type: ignore[attr-defined]
-        env["PYTHONPATH"] = str(base) + os.pathsep + env.get("PYTHONPATH", "")
-
     try:
-        subprocess.run(cmd, env=env, check=True)  # noqa: S603
+        subprocess.run(cmd, check=True)  # noqa: S603
     except KeyboardInterrupt:
         sys.exit(0)
+
+
+def _run_frozen(app_path: str) -> None:
+    """Modo empaquetado (PyInstaller): usa bootstrap.run con env vars."""
+    # Forzar config via variables de entorno (override ~/.streamlit/config.toml)
+    os.environ["STREAMLIT_SERVER_PORT"] = str(PORT)
+    os.environ["STREAMLIT_SERVER_HEADLESS"] = "false"
+    os.environ["STREAMLIT_BROWSER_GATHER_USAGE_STATS"] = "false"
+    os.environ["STREAMLIT_GLOBAL_DEVELOPMENT_MODE"] = "false"
+
+    from streamlit.web import bootstrap
+
+    bootstrap.run(
+        main_script_path=app_path,
+        is_hello=False,
+        args=[],
+        flag_options={},
+    )
+
+
+def main() -> None:
+    app_path = _resolver_app_path()
+
+    if getattr(sys, "frozen", False):
+        _run_frozen(app_path)
+    else:
+        _run_subprocess(app_path)
 
 
 if __name__ == "__main__":

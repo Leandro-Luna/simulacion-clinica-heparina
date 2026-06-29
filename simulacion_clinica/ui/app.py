@@ -32,7 +32,7 @@ def main() -> None:
     render_sidebar(state)
 
     st.title("Simulación de Stock de Heparina")
-    st.caption("Centro de Diálisis — Monte Carlo")
+    st.caption("Centro de Diálisis")
 
     tab_sim, tab_opt = st.tabs(["Simulación", "Optimización"])
     with tab_sim:
