@@ -2,7 +2,7 @@
 
 Este script arranca Streamlit programáticamente. En modo desarrollo usa
 subprocess del CLI; en modo empaquetado (frozen) usa bootstrap.run con
-variables de entorno para forzar el puerto.
+flag_options para forzar el puerto y abre el navegador manualmente.
 
 Uso directo:
 
@@ -15,9 +15,10 @@ Uso con PyInstaller (generar .exe en Windows):
 
 from __future__ import annotations
 
-import os
 import subprocess
 import sys
+import threading
+import webbrowser
 from pathlib import Path
 
 PORT = 8501
@@ -37,6 +38,14 @@ def _resolver_app_path() -> str:
             return str(app_path)
 
     raise FileNotFoundError("No se encontró app.py")
+
+
+def _abrir_navegador() -> None:
+    """Abre el navegador en el puerto correcto después de un delay."""
+    import time
+
+    time.sleep(3)
+    webbrowser.open(f"http://localhost:{PORT}")
 
 
 def _run_subprocess(app_path: str) -> None:
@@ -63,12 +72,9 @@ def _run_subprocess(app_path: str) -> None:
 
 
 def _run_frozen(app_path: str) -> None:
-    """Modo empaquetado (PyInstaller): usa bootstrap.run con env vars."""
-    # Forzar config via variables de entorno (override ~/.streamlit/config.toml)
-    os.environ["STREAMLIT_SERVER_PORT"] = str(PORT)
-    os.environ["STREAMLIT_SERVER_HEADLESS"] = "false"
-    os.environ["STREAMLIT_BROWSER_GATHER_USAGE_STATS"] = "false"
-    os.environ["STREAMLIT_GLOBAL_DEVELOPMENT_MODE"] = "false"
+    """Modo empaquetado (PyInstaller): usa bootstrap.run con flag_options."""
+    # Abrir navegador en el puerto correcto (Streamlit puede mostrar otro)
+    threading.Thread(target=_abrir_navegador, daemon=True).start()
 
     from streamlit.web import bootstrap
 
@@ -76,7 +82,12 @@ def _run_frozen(app_path: str) -> None:
         main_script_path=app_path,
         is_hello=False,
         args=[],
-        flag_options={},
+        flag_options={
+            "server.port": PORT,
+            "server.headless": False,
+            "browser.gatherUsageStats": False,
+            "global.developmentMode": False,
+        },
     )
 
 
