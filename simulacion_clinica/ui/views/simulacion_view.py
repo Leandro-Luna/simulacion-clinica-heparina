@@ -76,10 +76,10 @@ def render(state: UIConfigState) -> None:
             st.plotly_chart(chart_replicas_ctf(df_resumen), width="stretch")
 
         st.subheader("Tablas")
-        with st.expander("Detalle por día (Corrida 1)", expanded=False):
-            st.dataframe(df_corrida1, width="stretch", hide_index=True)
-        with st.expander("Resumen de réplicas", expanded=False):
-            st.dataframe(safe_dataframe(df_replicas), width="stretch", hide_index=True)
+        with st.expander("Detalle por día (Corrida 1)", expanded=True):
+            st.dataframe(df_corrida1, width="stretch", height=600, hide_index=True)
+        with st.expander("Resumen de réplicas", expanded=True):
+            st.dataframe(safe_dataframe(df_replicas), width="stretch", height=400, hide_index=True)
 
         excel_bytes = exportar_simulacion_bytes(df_corrida1, df_resumen)
         st.download_button(

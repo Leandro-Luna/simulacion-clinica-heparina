@@ -67,10 +67,14 @@ def render(state: UIConfigState) -> None:
             st.plotly_chart(chart_costo_acumulado(df_mejor), width="stretch")
 
         st.subheader("Tablas")
-        with st.expander("Combinaciones evaluadas", expanded=False):
-            st.dataframe(safe_dataframe(df_resultados), width="stretch", hide_index=True)
-        with st.expander("Detalle mejor combinación", expanded=False):
-            st.dataframe(safe_dataframe(df_mejor), width="stretch", hide_index=True)
+        with st.expander("Combinaciones evaluadas", expanded=True):
+            st.dataframe(
+                safe_dataframe(df_resultados), width="stretch", height=500, hide_index=True
+            )
+        with st.expander("Detalle mejor combinación", expanded=True):
+            st.dataframe(
+                safe_dataframe(df_mejor), width="stretch", height=600, hide_index=True
+            )
 
         excel_bytes = exportar_optimizacion_bytes(df_resultados, df_mejor)
         st.download_button(
