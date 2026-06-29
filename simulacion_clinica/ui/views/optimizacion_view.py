@@ -46,10 +46,23 @@ def render(state: UIConfigState) -> None:
 
     if df_resultados is not None and df_mejor is not None:
         mejor = df_resultados.iloc[0]
-        col1, col2, col3 = st.columns(3)
+
+        excel_bytes = exportar_optimizacion_bytes(df_resultados, df_mejor)
+        col_btn2.download_button(
+            label="Exportar a Excel",
+            data=excel_bytes,
+            file_name="resultado_optimizacion.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            key="opt_download",
+        )
+
+        st.subheader("Mejor combinación (IC 95%)")
+        col1, col2, col3, col4, col5 = st.columns(5)
         col1.metric("Mejor PEP", f"{int(mejor['punto_emision_pedido'])}")
         col2.metric("Mejor TP", f"{int(mejor['tamaño_pedido'])}")
         col3.metric("CTF promedio", f"${mejor['CTF_promedio']:,.0f}")
+        col4.metric("IC Inf", f"${mejor['IC_inf']:,.0f}")
+        col5.metric("IC Sup", f"${mejor['IC_sup']:,.0f}")
 
         st.subheader("Gráficos")
         tab1, tab2, tab3 = st.tabs(
@@ -75,12 +88,3 @@ def render(state: UIConfigState) -> None:
             st.dataframe(
                 safe_dataframe(df_mejor), width="stretch", height=600, hide_index=True
             )
-
-        excel_bytes = exportar_optimizacion_bytes(df_resultados, df_mejor)
-        st.download_button(
-            label="Exportar a Excel",
-            data=excel_bytes,
-            file_name="resultado_optimizacion.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            key="opt_download",
-        )

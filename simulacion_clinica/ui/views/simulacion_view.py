@@ -52,6 +52,15 @@ def render(state: UIConfigState) -> None:
             st.session_state["sim_df_resumen"] = df_resumen
 
     if df_corrida1 is not None and df_resumen is not None:
+        excel_bytes = exportar_simulacion_bytes(df_corrida1, df_resumen)
+        col_btn2.download_button(
+            label="Exportar a Excel",
+            data=excel_bytes,
+            file_name="resultado_simulacion.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            key="sim_download",
+        )
+
         df_replicas, stats = _split_resumen(df_resumen)
 
         st.subheader("Estadísticas (IC 95%)")
@@ -80,12 +89,3 @@ def render(state: UIConfigState) -> None:
             st.dataframe(df_corrida1, width="stretch", height=600, hide_index=True)
         with st.expander("Resumen de réplicas", expanded=True):
             st.dataframe(safe_dataframe(df_replicas), width="stretch", height=400, hide_index=True)
-
-        excel_bytes = exportar_simulacion_bytes(df_corrida1, df_resumen)
-        st.download_button(
-            label="Exportar a Excel",
-            data=excel_bytes,
-            file_name="resultado_simulacion.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            key="sim_download",
-        )
