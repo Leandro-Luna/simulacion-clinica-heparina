@@ -24,7 +24,7 @@ class UIConfigState:
     ST_inicial: int = 1000
     PE: int = 500  # cantidad de emergencia (nombre compartido)
     SS: int = 300
-    TP: int = 1500
+    TP: int = 2000
 
     # Costos
     costo_unitario_pedido: int = 1150
