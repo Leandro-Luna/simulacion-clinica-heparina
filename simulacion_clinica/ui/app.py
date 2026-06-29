@@ -27,7 +27,8 @@ def main() -> None:
         page_icon="🏥",
         layout="wide",
     )
-
+    st.set_option("client.toolbarMode", "viewer")
+    
     state = init_state()
     render_sidebar(state)
 

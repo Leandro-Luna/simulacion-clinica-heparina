@@ -81,5 +81,5 @@ exe = EXE(
     runtime_tmpdir=None,
     console=False,
     windowed=True,
-    icon=None,
+    icon="app-icon.ico",
 )
