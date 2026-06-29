@@ -8,6 +8,7 @@ encontrar la que minimiza el costo total final (CTF) promedio.
 
 import math
 import random
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date, timedelta
 
@@ -173,13 +174,19 @@ def optimizar(
     cfg_base: ConfigOptimizacion,
     puntos_emision: list[int],
     tamanios_pedido: list[int],
+    on_combo_done: Callable[[int, int], None] | None = None,
 ) -> pd.DataFrame:
     """Grid search sobre el producto cartesiano PEP × tamaño de pedido.
 
     Por cada combinación corre n_replicas réplicas y calcula estadísticas.
     Retorna un DataFrame ordenado por CTF promedio ascendente.
+
+    on_combo_done: callback opcional ``(completados, total)`` llamado tras
+    cada combinación para reportar progreso.
     """
     filas: list[dict] = []
+    total_combos = len(puntos_emision) * len(tamanios_pedido)
+    completados = 0
 
     for pep in puntos_emision:
         for tp in tamanios_pedido:
@@ -237,6 +244,10 @@ def optimizar(
                     "n_recepciones_prom": sum(n_receps) / n,
                 }
             )
+
+            completados += 1
+            if on_combo_done is not None:
+                on_combo_done(completados, total_combos)
 
     df_resultados = pd.DataFrame(filas)
     df_resultados = df_resultados.sort_values("CTF_promedio", ascending=True).reset_index(drop=True)

@@ -28,21 +28,31 @@ def render(state: UIConfigState) -> None:
     df_mejor = st.session_state.get("opt_df_mejor")
 
     if ejecutar or df_resultados is None:
-        with st.spinner("Ejecutando optimización..."):
-            cfg = state.to_config_optimizacion()
-            puntos_emision = list(range(state.pep_min, state.pep_max + 1, state.pep_paso))
-            tamanios_pedido = list(range(state.tp_min, state.tp_max + 1, state.tp_paso))
+        cfg = state.to_config_optimizacion()
+        puntos_emision = list(range(state.pep_min, state.pep_max + 1, state.pep_paso))
+        tamanios_pedido = list(range(state.tp_min, state.tp_max + 1, state.tp_paso))
+        total_combos = len(puntos_emision) * len(tamanios_pedido)
 
-            df_resultados = optimizar(cfg, puntos_emision, tamanios_pedido)
-            mejor = df_resultados.iloc[0]
-            cfg_mejor = state.to_config_optimizacion()
-            cfg_mejor.TP = int(mejor["tamaño_pedido"])
-            cfg_mejor.punto_emision_pedido = int(mejor["punto_emision_pedido"])
-            cfg_mejor.seed = None
-            df_mejor, _ = simular_optimizacion(cfg_mejor)
+        barra = st.progress(0, text=f"Optimizando 0/{total_combos} combinaciones...")
 
-            st.session_state["opt_df_resultados"] = df_resultados
-            st.session_state["opt_df_mejor"] = df_mejor
+        def _progreso(completados: int, total: int) -> None:
+            barra.progress(
+                completados / total,
+                text=f"Optimizando {completados}/{total} combinaciones...",
+            )
+
+        df_resultados = optimizar(cfg, puntos_emision, tamanios_pedido, on_combo_done=_progreso)
+        barra.progress(1.0, text=f"Optimización completa: {total_combos} combinaciones evaluadas.")
+
+        mejor = df_resultados.iloc[0]
+        cfg_mejor = state.to_config_optimizacion()
+        cfg_mejor.TP = int(mejor["tamaño_pedido"])
+        cfg_mejor.punto_emision_pedido = int(mejor["punto_emision_pedido"])
+        cfg_mejor.seed = None
+        df_mejor, _ = simular_optimizacion(cfg_mejor)
+
+        st.session_state["opt_df_resultados"] = df_resultados
+        st.session_state["opt_df_mejor"] = df_mejor
 
     if df_resultados is not None and df_mejor is not None:
         mejor = df_resultados.iloc[0]
