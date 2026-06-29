@@ -19,7 +19,6 @@ def render(state: UIConfigState) -> None:
 
     col_btn1, col_btn2 = st.columns([1, 1])
     ejecutar = col_btn1.button("Ejecutar optimización", type="primary", key="opt_ejecutar")
-    descargar = col_btn2.button("Exportar a Excel", disabled=True, key="opt_exportar")
 
     if ejecutar:
         st.session_state["opt_df_resultados"] = None
@@ -73,12 +72,11 @@ def render(state: UIConfigState) -> None:
         with st.expander("Detalle mejor combinación", expanded=False):
             st.dataframe(safe_dataframe(df_mejor), width="stretch", hide_index=True)
 
-        if descargar:
-            excel_bytes = exportar_optimizacion_bytes(df_resultados, df_mejor)
-            st.download_button(
-                label="Descargar Excel",
-                data=excel_bytes,
-                file_name="resultado_optimizacion.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                key="opt_download",
-            )
+        excel_bytes = exportar_optimizacion_bytes(df_resultados, df_mejor)
+        st.download_button(
+            label="Exportar a Excel",
+            data=excel_bytes,
+            file_name="resultado_optimizacion.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            key="opt_download",
+        )

@@ -52,13 +52,13 @@ def chart_optimizacion_ctf(df: pd.DataFrame, top_n: int = 10) -> go.Figure:
         x="CTF_promedio",
         y="combinacion",
         orientation="h",
-        title=f"Top {top_n} combinaciones por CTF promedio",
+        title=f"Top {top_n} combinaciones por CTF promedio (menor a mayor)",
     )
     fig.update_layout(
         xaxis_title="CTF promedio ($)",
         yaxis_title="PEP / TP",
         height=400,
-        yaxis={"categoryorder": "total ascending"},
+        yaxis={"categoryorder": "total descending"},
     )
     fig.update_traces(marker_color="teal", texttemplate="%{x:,.0f}", textposition="outside")
     return fig
