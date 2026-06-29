@@ -1,8 +1,8 @@
 """Launcher para empaquetar la app Streamlit como ejecutable con PyInstaller.
 
 Este script arranca Streamlit programáticamente. En modo desarrollo usa
-subprocess del CLI; en modo empaquetado (frozen) usa bootstrap.run con
-flag_options para forzar el puerto y abre el navegador manualmente.
+subprocess del CLI; en modo empaquetado (frozen) simula sys.argv y usa
+bootstrap.run para que Streamlit procese los flags igual que desde CLI.
 
 Uso directo:
 
@@ -72,8 +72,23 @@ def _run_subprocess(app_path: str) -> None:
 
 
 def _run_frozen(app_path: str) -> None:
-    """Modo empaquetado (PyInstaller): usa bootstrap.run con flag_options."""
-    # Abrir navegador en el puerto correcto (Streamlit puede mostrar otro)
+    """Modo empaquetado (PyInstaller): simula sys.argv y usa bootstrap.run."""
+    # Simular los argumentos del CLI para que Streamlit los procese igual
+    sys.argv = [
+        "streamlit",
+        "run",
+        app_path,
+        "--server.port",
+        str(PORT),
+        "--server.headless",
+        "false",
+        "--browser.gatherUsageStats",
+        "false",
+        "--global.developmentMode",
+        "false",
+    ]
+
+    # Abrir navegador en el puerto correcto
     threading.Thread(target=_abrir_navegador, daemon=True).start()
 
     from streamlit.web import bootstrap
@@ -81,13 +96,8 @@ def _run_frozen(app_path: str) -> None:
     bootstrap.run(
         main_script_path=app_path,
         is_hello=False,
-        args=[],
-        flag_options={
-            "server.port": PORT,
-            "server.headless": False,
-            "browser.gatherUsageStats": False,
-            "global.developmentMode": False,
-        },
+        args=sys.argv[2:],
+        flag_options={},
     )
 
 
