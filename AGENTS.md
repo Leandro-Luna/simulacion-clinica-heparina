@@ -17,6 +17,9 @@ uv run python -m simulacion_clinica.main_optimizacion
 # Run UI (Streamlit web app; opens browser)
 uv run streamlit run simulacion_clinica/ui/app.py
 
+# Build standalone executable (run on target OS; .exe on Windows)
+uv run pyinstaller simulacion-clinica.spec --clean --noconfirm
+
 # Validation
 uv run pytest
 uv run ruff check .
@@ -32,9 +35,11 @@ uv run pyright
 - `simulacion_clinica/main.py` and `main_optimizacion.py` — CLI entry points.
 - `simulacion_clinica/ui/` — Streamlit web UI.
   - `app.py` — entry point of the UI.
+  - `launcher.py` — entry point for PyInstaller executable packaging.
   - `config_state.py` — shared editable state.
   - `views/config_view.py`, `views/simulacion_view.py`, `views/optimizacion_view.py` — sidebar + tabs.
   - `components/charts.py` — Plotly interactive charts.
+- `simulacion-clinica.spec` — PyInstaller spec for building standalone executable.
 - `simulacion_clinica/tests/` — pytest suite.
 
 ## Known gotchas

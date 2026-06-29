@@ -43,6 +43,17 @@ También podés ejecutar la aplicación web para configurar parámetros, correr 
 uv run streamlit run simulacion_clinica/ui/app.py
 ```
 
+### Generar ejecutable (.exe)
+
+Para distribuir la app como ejecutable standalone (sin necesidad de instalar Python):
+
+```bash
+# En Windows (genera dist/simulacion-clinica.exe)
+uv run pyinstaller simulacion-clinica.spec --clean --noconfirm
+```
+
+El ejecutable arranca el servidor local y abre el navegador automáticamente.
+
 La simulación:
 1. Muestra en consola el DataFrame con el detalle por día (sin límites de columnas/filas).
 2. Imprime un resumen con el costo total final (CTF) y su desglose.
